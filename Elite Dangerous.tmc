@@ -1,0 +1,133 @@
+include "target.tmh" // Default system import
+include "EDSettings.tmh" // Global settings definition
+include "EDKeyMap.ttm" // Key mapping
+include "EDMacros.tmh" // Macros definition
+
+int main() {
+	// Exclude missing devices
+	Configure(&HCougar, MODE_EXCLUDED);
+	Configure(&T16000, MODE_EXCLUDED);
+	Configure(&LMFD, MODE_EXCLUDED);
+	Configure(&RMFD, MODE_EXCLUDED);
+
+	if(Init(&EventHandle)) return 1;
+
+	// Base settings
+	SetKBRate(PulseTime, DelayTime);
+	SetKBLayout(KBLayout);
+	SetShiftButton(0, 0, &Throttle, BSF, BSB); // Boat switch as UMD selector
+
+	// Init LED
+	ActKey(PULSE+KEYON+LED(&Throttle, LED_INTENSITY, 0)); // Disable LED on start
+
+	// Init custom macro
+	initCustomCommands();
+
+	// Init axis mappings
+	initJoystickAxis();
+	initThrottleAxis();
+
+	// Map joystick
+	MapKey(&Joystick, TG1, PrimaryFire);
+	MapKey(&Joystick, TG2, SecondaryFire);
+
+	MapKey(&Joystick, S1, TEMPO(NextFireGroup, PrevFireGroup, LongPressDelay));
+	MapKey(&Joystick, S2, SecondaryFire);
+	MapKey(&Joystick, S3, DeployHardpoints);
+	MapKey(&Joystick, S4, TEMPO(DisableFlightAssist, EngineBoost, LongPressDelay));
+
+	MapKeyUMD(&Joystick, H1U, ThrustUp, TEMPO(PowerEng, mPowerEngWep, LongPressDelay), ThrustUp);
+	MapKeyUMD(&Joystick, H1D, ThrustDown, TEMPO(BalancePower, mPowerEngSys, LongPressDelay), ThrustDown);
+	MapKeyUMD(&Joystick, H1L, ThrustLeft, TEMPO(PowerSys, mPowerSysWep, LongPressDelay), ThrustLeft);
+	MapKeyUMD(&Joystick, H1R, ThrustRight, TEMPO(PowerWep, mPowerWepSys, LongPressDelay), ThrustRight);
+
+	MapKey(&Joystick, H2U, TEMPO(PULSE+SelectTargetAhead, PULSE+SelectHighestThreat, LongPressDelay));
+	MapKey(&Joystick, H2D, TEMPO(PULSE+SelectNextSubsystem, PULSE+SelectPrevSubsystem, LongPressDelay));
+	MapKey(&Joystick, H2L, TEMPO(PULSE+SelectPrevHostileShip, PULSE+SelectPrevShip, LongPressDelay));
+	MapKey(&Joystick, H2R, TEMPO(PULSE+SelectNextHostileShip, PULSE+SelectNextShip, LongPressDelay));
+
+	MapKey(&Joystick, H3U, TEMPO(PULSE+CommsPanel, PULSE+QuickCommsPanel, LongPressDelay));
+	MapKey(&Joystick, H3D, TEMPO(PULSE+SensorPanel, PULSE+UIEscape, LongPressDelay));
+	MapKey(&Joystick, H3L, TEMPO(PULSE+TargetPanel, PULSE+SystemMap, LongPressDelay));
+	MapKey(&Joystick, H3R, TEMPO(PULSE+SystemPanel, PULSE+GalaxyMap, LongPressDelay));
+
+	MapKey(&Joystick, H4U, TEMPO(UIUp, UIBack, LongPressDelay));
+	MapKey(&Joystick, H4D, TEMPO(UIDown, UISelect, LongPressDelay));
+	MapKey(&Joystick, H4L, TEMPO(UILeft, UIPrevPanel, LongPressDelay));
+	MapKey(&Joystick, H4R, TEMPO(UIRight, UINextPanel, LongPressDelay));
+	MapKey(&Joystick, H4P, TEMPO(UISelect, UIBack, LongPressDelay));
+
+	// Map throttle
+	MapKey(&Throttle, MSU, 0);
+	MapKey(&Throttle, MSD, DeployHeatSink);
+	MapKey(&Throttle, MSL, FireChaffLauncher);
+	MapKey(&Throttle, MSR, UseShieldCell);
+	MapKey(&Throttle, MSP, 0);
+
+	MapKey(&Throttle, SPDF, ReverseThrottle);
+	MapKey(&Throttle, SPDB, EngineBoost);
+
+	MapKey(&Throttle, BSF, mThrottleFullScale);
+	MapKey(&Throttle, BSM, mThrottleFwdOnly);
+	MapKey(&Throttle, BSB, mThrottleFullScale);
+
+	MapKey(&Throttle, CHF, TEMPO(Supercruise, FrameShiftDrive, LongPressDelay));
+	MapKey(&Throttle, CHB, LandingGear);
+
+	MapKey(&Throttle, PSF, PULSE+ShipLights);
+	MapKey(&Throttle, PSM, PULSE+ShipLights);
+	MapKey(&Throttle, PSB, PULSE+ShipLights);
+
+	MapKey(&Throttle, LTB, FrameShiftDrive);
+
+	MapKey(&Throttle, SC, 0);
+
+	MapKeyUMD(&Throttle, CSU, TEMPO(PowerEng, mPowerEngWep, LongPressDelay), ThrustUp, TEMPO(PowerEng, mPowerEngWep, LongPressDelay));
+	MapKeyUMD(&Throttle, CSD, TEMPO(BalancePower, mPowerEngSys, LongPressDelay), ThrustDown, TEMPO(BalancePower, mPowerEngSys, LongPressDelay));
+	MapKeyUMD(&Throttle, CSL, TEMPO(PowerSys, mPowerSysWep, LongPressDelay), ThrustLeft, TEMPO(PowerSys, mPowerSysWep, LongPressDelay));
+	MapKeyUMD(&Throttle, CSR, TEMPO(PowerWep, mPowerWepSys, LongPressDelay), ThrustRight, TEMPO(PowerWep, mPowerWepSys, LongPressDelay));
+
+	MapKey(&Throttle, IDLELON, 0);
+	MapKey(&Throttle, IDLELOFF, 0);
+	MapKey(&Throttle, IDLERON, 0);
+	MapKey(&Throttle, IDLEROFF, 0);
+
+	MapKey(&Throttle, EFLNORM, 0);
+	MapKey(&Throttle, EFLOVER, 0);
+	MapKey(&Throttle, EFRNORM, 0);
+	MapKey(&Throttle, EFLOVER, 0);
+
+	MapKey(&Throttle, EOLIGN, mRequestDock);
+	MapKey(&Throttle, EOLNORM, 0);
+	MapKey(&Throttle, EOLMOTOR, 0);
+	MapKey(&Throttle, EORIGN, 0);
+	MapKey(&Throttle, EORNORM, 0);
+	MapKey(&Throttle, EORMOTOR, 0);
+
+	MapKey(&Throttle, APUON, PULSE+JettisonAllCargo);
+	MapKey(&Throttle, APUOFF, 0);
+
+	MapKey(&Throttle, FLAPU, 0);
+	MapKey(&Throttle, FLAPM, 0);
+	MapKey(&Throttle, FLAPD, 0);
+
+	MapKey(&Throttle, LDGH, LandingGear);
+
+	MapKey(&Throttle, EACON, CargoScoop);
+	MapKey(&Throttle, EACOFF, 0);
+
+	MapKey(&Throttle, RDRNRM, SilentRunning);
+	MapKey(&Throttle, RDRDIS, 0);
+
+	MapKey(&Throttle, APENG, SelectNextSystemInRoute);
+	MapKey(&Throttle, APDIS, 0);
+
+	MapKey(&Throttle, APPAT, 0);
+	MapKey(&Throttle, APAH, 0);
+	MapKey(&Throttle, APALT, 0);
+}
+
+
+int EventHandle(int type, alias o, int x) {
+	DefaultMapping(&o, x);
+}

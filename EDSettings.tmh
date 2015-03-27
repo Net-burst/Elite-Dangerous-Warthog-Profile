@@ -1,0 +1,4 @@
+define PulseTime 25
+define DelayTime 75
+define KBLayout KB_ENG
+define LongPressDelay 500

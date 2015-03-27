@@ -1,0 +1,73 @@
+//External bindings
+define ResetHeadOrientation 0
+
+// Weapons
+define PrimaryFire DX1
+define SecondaryFire DX2
+define NextFireGroup DX3
+define PrevFireGroup L_SHIFT+DX3
+define DeployHardpoints DX4
+
+// UI
+define UISelect USB[0x2C] // Space
+define UIBack USB[0x2A] // Backspace
+define UIUp USB[0x1A] // W
+define UIDown USB[0x16] // S
+define UILeft USB[0x04] // A
+define UIRight USB[0x07] //D
+define UINextPanel USB[0x08] // E
+define UIPrevPanel USB[0x14] // Q
+define TargetPanel USB[0x1E] // 1
+define SystemPanel USB[0x21] // 4
+define CommsPanel USB[0x1F] // 2
+define QuickCommsPanel L_SHIFT+USB[0x1F] // Left shift + 2
+define SensorPanel USB[0x20] // 3
+define UIEscape USB[0x29] // Escape
+define SystemMap USB[0x36] // <
+define GalaxyMap USB[0x37] // >
+
+// Flight
+define DisableFlightAssist DX5
+define ThrustUp DX6
+define ThrustDown DX7
+define ThrustLeft DX8
+define ThrustRight DX9
+define ReverseThrottle DX10
+define EngineBoost DX11
+define FrameShiftDrive DX12
+define Supercruise DX20
+
+// Targeting
+define SelectTargetAhead USB[0x17] // T
+define SelectNextShip USB[0x0A] // G
+define SelectPrevShip L_SHIFT+USB[0x0A] // Left shift + G
+define SelectHighestThreat L_SHIFT+USB[0x17] // Left shift + T
+define SelectNextHostileShip USB[0x0B] // H
+define SelectPrevHostileShip L_SHIFT+USB[0x0B] // Left shift + H
+define SelectNextSubsystem USB[0x1C] // Y
+define SelectPrevSubsystem L_SHIFT+USB[0x1C] // Left shift + Y
+define SelectNextSystemInRoute USB[0x11] // N
+
+// Cooling
+define SilentRunning DX13
+define DeployHeatSink DX14
+
+// Miscellaneous
+define ShipLights USB[0x49] // Insert
+define IncreseSensorZoom USB[0x2E] // =
+define DecreaseSensorZoom USB[0x2D] // -
+define PowerEng USB[0x52] // Up arrow
+define PowerWep USB[0x4F] // Right arrow
+define PowerSys USB[0x50] // Left arrow
+define BalancePower USB[0x51] // Down arrow
+define CargoScoop DX15
+define JettisonAllCargo DX16
+define LandingGear DX17
+define UseShieldCell DX18
+define FireChaffLauncher DX19
+
+// Headlook
+define LookUp DXHATUP
+define LookDown DXHATDOWN
+define LookLeft DXHATLEFT
+define LookRight DXHATRIGHT

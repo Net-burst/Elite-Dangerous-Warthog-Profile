@@ -1,0 +1,79 @@
+int mRequestDock;
+int mPowerWepSys, mPowerSysWep, mPowerEngSys, mPowerEngWep;
+int mThrottleFwdOnly, mThrottleFullScale, mThrottleFullOptimal;
+
+int initJoystickAxis() {
+	MapAxis(&Joystick, JOYX, DX_X_AXIS, AXIS_NORMAL, MAP_ABSOLUTE);
+		SetSCurve(&Joystick, JOYX, 0, 0, 0, 0, 0);
+	MapAxis(&Joystick, JOYY, DX_Y_AXIS, AXIS_NORMAL, MAP_ABSOLUTE);
+		SetSCurve(&Joystick, JOYY, 0, 0, 0, 0, 0);
+}
+
+int initThrottleAxis() {
+	MapAxis(&Throttle, SCX, DX_XROT_AXIS, AXIS_NORMAL, MAP_ABSOLUTE);
+		SetSCurve(&Throttle, SCX, 0, 0, 0, 2, 0);
+	MapAxis(&Throttle, SCY, DX_YROT_AXIS, AXIS_NORMAL, MAP_ABSOLUTE);
+		SetSCurve(&Throttle, SCY, 0, 0, 0, 2, 0);
+	MapAxis(&Throttle, THR_RIGHT, DX_Z_AXIS, AXIS_NORMAL, MAP_ABSOLUTE);
+		TrimDXAxis(DX_Z_AXIS, SET(-1024));
+		SetSCurve(&Throttle, THR_RIGHT, 0, -100, 0, 0);
+	MapAxis(&Throttle, THR_LEFT, DX_ZROT_AXIS, AXIS_NORMAL, MAP_ABSOLUTE);
+		SetSCurve(&Throttle, THR_LEFT, 0, 0, 0, 0, 0);
+	MapAxis(&Throttle, THR_FC, DX_SLIDER_AXIS, AXIS_NORMAL, MAP_ABSOLUTE);
+		SetSCurve(&Throttle, THR_FC, 0, 0, 0, 0, 0);
+}
+
+int initCustomCommands() {
+	// Dock request
+	mRequestDock = CHAIN(
+		LOCK+PULSE+TargetPanel, D(),
+		PULSE+UINextPanel, D(),
+		PULSE+UINextPanel, D(),
+		PULSE+UISelect, D(),
+		PULSE+UIDown, D(),
+		PULSE+UISelect, D(),
+		PULSE+UIPrevPanel, D(),
+		PULSE+UIPrevPanel, D(),
+		PULSE+UIBack, LOCK
+	);
+
+	// 4 pips in WEP, 2 in SYS
+	mPowerWepSys = CHAIN(
+		PULSE+BalancePower, D(),
+		PULSE+PowerWep, D(),
+		PULSE+PowerSys, D(),
+		PULSE+PowerWep, D(),
+		PULSE+PowerWep
+	);
+	// 4 pips in SYS, 2 in WEP
+	mPowerSysWep = CHAIN(
+		PULSE+BalancePower, D(),
+		PULSE+PowerSys, D(),
+		PULSE+PowerWep, D(),
+		PULSE+PowerSys, D(),
+		PULSE+PowerSys
+	);
+	// 4 pips in ENG, 2 in SYS
+	mPowerEngSys = CHAIN(
+		PULSE+BalancePower, D(),
+		PULSE+PowerEng, D(),
+		PULSE+PowerSys, D(),
+		PULSE+PowerEng, D(),
+		PULSE+PowerEng
+	);
+	// 4 pips in ENG, 2 in WEP
+	mPowerEngWep = CHAIN(
+		PULSE+BalancePower, D(),
+		PULSE+PowerEng, D(),
+		PULSE+PowerWep, D(),
+		PULSE+PowerEng, D(),
+		PULSE+PowerEng
+	);
+
+	// Trim first 50% of throttle movement
+	mThrottleFwdOnly = EXEC("TrimDXAxis(DX_Z_AXIS, SET(-1024)); SetSCurve(&Throttle, THR_RIGHT, 0, -100, 0, 0);");
+	// Make throttle liniar and full scale
+	mThrottleFullScale = EXEC("TrimDXAxis(DX_Z_AXIS, SET(0)); SetJCurve(&Throttle, THR_RIGHT, 50, 50);");
+	// Trim throttle to 25% at beginning and end
+	mThrottleFullOptimal = EXEC("TrimDXAxis(DX_Z_AXIS, SET(0)); SetSCurve(&Throttle, THR_RIGHT, -50, 0, -50, 0);");
+}
